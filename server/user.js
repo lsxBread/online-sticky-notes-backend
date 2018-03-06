@@ -43,7 +43,7 @@ Router.get('/logout', (req, res) => {
 
 Router.post('/register', (req, res) => {
 	const { r_username, r_password} = req.body
-	UserModel.findOne({ useranme: r_username }, (err, doc) => {
+	UserModel.findOne({ username: r_username }, (err, doc) => {
 		if (doc) {
 			return res.json({ code: 1, msg: 'Username alread exist' })
 		}
