@@ -5,21 +5,18 @@ const model = require('./model')
 const UserModel = model.getModel('users')
 const _filter = { 'password': 0, '__v': 0 }
 
-Router.post('/update', (req, res) => {
+Router.get('/info', (req, res) => {
 	const { userid } = req.cookies
 	if (!userid) {
-		return res.json({ code: 1, msg: 'Not login' })
+		return res.json({ code: 1, msg: 'Please Login' })
 	}
-	const body = req.body
-	if (!body.avatar) {
-		return res.json({ code: 1, msg: 'Please select avatar' })
-	}
-	UserModel.findByIdAndUpdate(userid, body, (err, doc) => {
-		const data = Object.assign({}, {
-			user: doc.user,
-			type: doc.type
-		}, body)
-		return res.json({ data, code: 0, msg: 'Update Success' })
+	UserModel.findOne({ _id: userid }, _filter, (err, doc) => {
+		if (err) {
+			return res.json({ code: 1, msg: 'Error in Server' })
+		}
+		if (doc) {
+			return res.json({ code: 0, data: doc, msg: 'Login Success' })
+		}
 	})
 })
 
