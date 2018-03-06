@@ -10,7 +10,7 @@ const server = require('http').Server(app)
 
 const userRoute = require('./server/user')
 
-app.use(cors({credentials: true, origin: ['http://localhost:3000','https://online-sticky-notes.firebaseapp.com/']})) 
+app.use(cors({credentials: true, origin: ['http://localhost:3000','https://online-sticky-notes.firebaseapp.com']})) 
 app.use(cookieParser())
 app.use(bodyParser.json())
 app.use('/user', userRoute)
