@@ -10,7 +10,7 @@ Router.get('/info', (req, res) => {
 	if (!userid) {
 		return res.json({ code: 1, msg: 'Please Login' })
 	}
-	UserModel.findOne({ _id: {"$oid": userid} }, _filter, (err, doc) => {
+	UserModel.findById(userid , _filter, (err, doc) => {
 		if (err) {
 			return res.json({ code: 1, msg: 'Error in Server' })
 		}
