@@ -1,5 +1,5 @@
 const express = require('express')
-// const cors = require('cors')
+const cors = require('cors')
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
 const path = require('path')
@@ -10,7 +10,7 @@ const server = require('http').Server(app)
 
 const userRoute = require('./server/user')
 
-// app.use(cors({credentials: true, origin: ['http://localhost:3000', 'https://job-communicate.firebaseapp.com']})) 
+app.use(cors({credentials: true, origin: ['http://localhost:3000']})) 
 app.use(cookieParser())
 app.use(bodyParser.json())
 app.use('/user', userRoute)
