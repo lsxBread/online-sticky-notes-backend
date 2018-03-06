@@ -10,7 +10,7 @@ Router.get('/info', (req, res) => {
 	if (!userid) {
 		return res.json({ code: 1, msg: 'Please Login' })
 	}
-	UserModel.findOne({ _id: userid }, _filter, (err, doc) => {
+	UserModel.findOne({ _id: {"$oid": userid} }, _filter, (err, doc) => {
 		if (err) {
 			return res.json({ code: 1, msg: 'Error in Server' })
 		}
@@ -42,7 +42,7 @@ Router.get('/logout', (req, res) => {
 })
 
 Router.post('/register', (req, res) => {
-	const { r_username, r_password} = req.body
+	const {r_username, r_password} = req.body
 	UserModel.findOne({ username: r_username }, (err, doc) => {
 		if (doc) {
 			return res.json({ code: 1, msg: 'Username alread exist' })
