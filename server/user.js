@@ -42,13 +42,13 @@ Router.get('/logout', (req, res) => {
 })
 
 Router.post('/register', (req, res) => {
-	const { username, password} = req.body
-	UserModel.findOne({ useranme: username }, (err, doc) => {
+	const { r_username, r_password} = req.body
+	UserModel.findOne({ useranme: r_username }, (err, doc) => {
 		if (doc) {
 			return res.json({ code: 1, msg: 'Username alread exist' })
 		}
 
-		const temp = new UserModel({ username, password: md5Pwd(password) })
+		const temp = new UserModel({ username: r_username, password: md5Pwd(r_password) })
 		temp.save((err, doc) => {
 			if (err) {
 				return res.json({ code: 1, msg: "Error in Server" })
