@@ -33,6 +33,14 @@ Router.post('/login', (req, res) => {
 	})
 })
 
+Router.get('/logout', (req, res) => {
+	const { userid } = req.cookies
+	if (userid) {
+		res.cookie("userid", "", { expires: new Date(0)});
+		return res.json({ code: 0 })	
+	}
+})
+
 Router.post('/register', (req, res) => {
 	const { username, password} = req.body
 	UserModel.findOne({ useranme: username }, (err, doc) => {
