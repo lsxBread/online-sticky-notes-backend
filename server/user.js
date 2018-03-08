@@ -5,39 +5,32 @@ const model = require('./model')
 const UserModel = model.getModel('users')
 const _filter = { 'password': 0, '__v': 0 }
 
-Router.get('/info', (req, res) => {
-	const { userid } = req.cookies
-	if (!userid) {
-		return res.json({ code: 1, msg: 'Please Login' })
+Router.get('/auth', (req, res) => {
+	console.log(req.cookies)
+	console.log(req.session)
+	if (req.session.user) {
+		return res.json({ code: 0, data: req.session.user, msg: 'Login Success' })
+	} else {
+		return res.json({ code: 1, msg: 'Please Login' })	
 	}
-	UserModel.findById(userid , _filter, (err, doc) => {
-		if (err) {
-			return res.json({ code: 1, msg: 'Error in Server' })
-		}
-		if (doc) {
-			return res.json({ code: 0, data: doc, msg: 'Login Success' })
-		}
-	})
 })
 
 Router.post('/login', (req, res) => {
 	const { username, password } = req.body
-	// UserModel.remove({}, (err, doc) => {})
 	UserModel.findOne({ username, password: md5Pwd(password) }, _filter, (err, doc) => {
 		if (!doc) {
 			return res.json({ code: 1, msg: 'Incorrect username or password' })
 		} else {
-			res.cookie('userid', doc._id)
+			req.session.user = doc
 			return res.json({ code: 0, data: doc, msg: 'Login Success' })
 		}
 	})
 })
 
 Router.get('/logout', (req, res) => {
-	const { userid } = req.cookies
-	if (userid) {
-		res.cookie("userid", "", { expires: new Date(0)});
-		return res.json({ code: 0 })	
+	if (req.session.user) {
+		req.session.user = null
+		return res.json({ code: 0 })
 	}
 })
 
@@ -53,9 +46,7 @@ Router.post('/register', (req, res) => {
 			if (err) {
 				return res.json({ code: 1, msg: "Error in Server" })
 			} else {
-				const { username, _id } = doc
-				res.cookie('userid', _id)
-				return res.json({ code: 0, data: { username, _id }, msg: "Register Success" })
+				return res.json({ code: 0, data: { username: r_username, password: r_password }, msg: "Register Success" })
 			}
 		})
 	})

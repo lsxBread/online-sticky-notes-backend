@@ -2,16 +2,23 @@ const express = require('express')
 const cors = require('cors')
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
+const session = require('express-session')
 const path = require('path')
 const model = require('./server/model')
-const usersModel= model.getModel('users')
-const app = express() 
+const usersModel = model.getModel('users')
+const app = express()
 const server = require('http').Server(app)
 
 const userRoute = require('./server/user')
 
-app.use(cors({credentials: true, origin: ['http://localhost:3000','https://online-sticky-notes.firebaseapp.com']})) 
+app.use(cors({ credentials: true, origin: ['http://localhost:3000', 'https://online-sticky-notes.firebaseapp.com'] }))
 app.use(cookieParser())
+app.use(session({
+    secret: 'recommand 128 bytes random string',
+    resave: true,
+    saveUninitialized: true, // 建议使用 128 个字符的随机字符串
+    cookie: { maxAge: 60 * 1000 * 24* 60 }
+}))
 app.use(bodyParser.json())
 app.use('/user', userRoute)
 server.listen(process.env.PORT || 9093, () => {
