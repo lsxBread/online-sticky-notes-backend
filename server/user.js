@@ -6,8 +6,6 @@ const UserModel = model.getModel('users')
 const _filter = { 'password': 0, '__v': 0 }
 
 Router.get('/auth', (req, res) => {
-	console.log(req.cookies)
-	console.log(req.session)
 	if (req.session.user) {
 		return res.json({ code: 0, data: req.session.user, msg: 'Login Success' })
 	} else {
