@@ -14,10 +14,10 @@ const server = require('http').Server(app)
 const userRoute = require('./server/user')
 
 // 创建Redis客户端
-var redisClient = redis.createClient(process.env.REDIS_URL, {auth_pass: 'password'});
+var redisClient = redis.createClient(process.env.REDIS_URL);
 app.use(session({
     store: new RedisStore({client: redisClient}),
-    secret: 'password',
+    secret: 'lsx_1988',
     resave: false,
     saveUninitialized: false,
     cookie: { maxAge: 60 * 1000 * 24* 60 }
