@@ -1,11 +1,47 @@
 const express = require('express')
 const Router = express.Router()
+const passport = require('passport')
+const GitHubStrategy = require('passport-github').Strategy;
 const utils = require('utility')
 const model = require('./model')
 const UserModel = model.getModel('users')
 const _filter = { 'password': 0, '__v': 0 }
 
+passport.serializeUser(function(user, done) {
+  done(null, user);
+});
+
+passport.deserializeUser(function(obj, done) {
+  done(null, obj);
+});
+
+passport.use(new GitHubStrategy({
+		clientID: 'cdce22417eb4dfee4520',
+		clientSecret: '8903912b9d5366e17d5829effa773890000a3733',
+		callbackURL: "https://my-note-server.herokuapp.com/user/github/callback"
+	},
+	function(accessToken, refreshToken, profile, done) {
+		done(null, profile);
+	}
+))
+
+Router.get('/github',
+  passport.authenticate('github'))
+
+Router.get('/github/callback',
+  passport.authenticate('github'),
+  function(req, res) {
+		let {login, id, avatar_url} = req.user._json
+		req.session.user = {
+			username: login,
+			_id: id,
+			avatar: avatar_url
+		}
+    res.redirect('https://onlinenotes.site/')
+  })
+
 Router.get('/auth', (req, res) => {
+
 	if (req.session.user) {
 		return res.json({ code: 0, data: req.session.user, msg: 'Login Success' })
 	} else {
@@ -27,7 +63,7 @@ Router.post('/login', (req, res) => {
 
 Router.get('/logout', (req, res) => {
 	if (req.session.user) {
-		req.session.user = null
+		req.session.destroy()
 		return res.json({ code: 0 })
 	}
 })
